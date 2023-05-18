@@ -8,12 +8,14 @@ TAESD is very tiny autoencoder which uses the same "latent API" as Stable Diffus
 
 ## What can I use TAESD for?
 
-Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image generation progress in real time. Here's a [example notebook](examples/Previewing_During_Image_Generation.ipynb) that adds previewing to the Diffusers implementation of SD2.1.
+Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image generation progress in real time.
+* Here's a [example notebook](examples/Previewing_During_Image_Generation.ipynb) that adds TAESD previewing to the Diffusers implementation of SD2.1.
+* Here's a [PR](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/10365/) adding TAESD previewing to the AUTOMATIC1111 WebUI (thanks to [Sakura-Luna](https://github.com/Sakura-Luna)).
 
 | ![](images/preview_images_1.gif) | ![](images/preview_images_2.gif) | ![](images/preview_images_3.gif) |
 | -------------------------------- | -------------------------------- | -------------------------------- |
 
-You can also use TAESD for tasks where the official decoder is [inconvenient](https://twitter.com/cloneofsimo/status/1624134163136933893), like quickly decoding really large images (these examples used the [latent upscaler](https://huggingface.co/docs/diffusers/main/en/api/pipelines/stable_diffusion/latent_upscale)).
+You can also use TAESD for other tasks where the official decoder is [inconvenient](https://twitter.com/cloneofsimo/status/1624134163136933893), like quickly decoding really large images (these examples used the [latent upscaler](https://huggingface.co/docs/diffusers/main/en/api/pipelines/stable_diffusion/latent_upscale)).
 
 | ![](images/latent_upscaled_1.jpg) | ![](images/latent_upscaled_2.jpg) | ![](images/latent_upscaled_3.jpg) |
 | --------------------------------- | --------------------------------- | --------------------------------- |
