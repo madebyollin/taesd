@@ -9,8 +9,11 @@ TAESD is very tiny autoencoder which uses the same "latent API" as Stable Diffus
 ## What can I use TAESD for?
 
 Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image generation progress in real time.
-* Here's a [example notebook](examples/Previewing_During_Image_Generation.ipynb) that adds TAESD previewing to the Diffusers implementation of SD2.1.
-* Here's a [PR](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/10365/) adding TAESD previewing to the AUTOMATIC1111 WebUI (thanks to [Sakura-Luna](https://github.com/Sakura-Luna)).
+* Here's a minimal [example notebook](examples/Previewing_During_Image_Generation.ipynb) that adds TAESD previewing to the Diffusers implementation of SD2.1.
+* TAESD is available in several Stable Diffusion WebUIs
+    * [A1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) thanks to [Sakura-Luna](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/10365)
+    * [vladmandic](https://github.com/vladmandic/automatic) thanks to [vladmandic](https://github.com/vladmandic/automatic/discussions/99#discussioncomment-6041142)
+    * [ComfyUI](https://github.com/comfyanonymous/ComfyUI) thanks to [space-nuko](https://github.com/comfyanonymous/ComfyUI/pull/713)
 
 | ![](images/preview_images_1.gif) | ![](images/preview_images_2.gif) | ![](images/preview_images_3.gif) |
 | -------------------------------- | -------------------------------- | -------------------------------- |
