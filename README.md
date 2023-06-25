@@ -10,6 +10,9 @@ TAESD is very tiny autoencoder which uses the same "latent API" as Stable Diffus
 
 Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image generation progress in real time.
 * Here's a minimal [example notebook](examples/Previewing_During_Image_Generation.ipynb) that adds TAESD previewing to the Diffusers implementation of SD2.1.
+* TAESD weights are available in multiple flavors
+    * `taesd*.pth`, compatible with the original [Stable Diffusion VAE](https://huggingface.co/stabilityai/sd-vae-ft-mse-original)
+    * `taesdxl*.pth`, compatible with to the retrained [SDXL VAE](https://huggingface.co/stabilityai/sdxl-vae)
 * TAESD is available in several Stable Diffusion WebUIs
     * [A1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) thanks to [Sakura-Luna](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/10365)
     * [vladmandic](https://github.com/vladmandic/automatic) thanks to [vladmandic](https://github.com/vladmandic/automatic/discussions/99#discussioncomment-6041142)
