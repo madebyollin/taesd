@@ -60,15 +60,15 @@ TAESD trades a (modest) loss in quality for a (substantial) gain in speed and co
 
 ## Comparison table
 
-|                                                              | SD VAE*                                                      | TAESD                                             |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------- |
-| Parameters in Encoder                                        | 34,163,592                                                   | 1,222,532                                         |
-| Parameters in Decoder                                        | 49,490,179                                                   | 1,222,531                                         |
-| ONNX Ops                                                     | Add, Cast, Concat, Constant, ConstantOfShape, Conv, Div, Gather, InstanceNormalization, MatMul, Mul, Pad, Reshape, Resize, Shape, Sigmoid, Slice, Softmax, Transpose, Unsqueeze | Add, Constant, Conv, Div, Mul, Relu, Resize, Tanh |
-| Runtime / memory scales linearly with size of the latents    | No                                                           | Yes                                               |
-| Bounded receptive field so you can split decoding work into tiles without, like, weird seams and stuff | No                                                           | Yes                                               |
-| High-quality details                                         | Yes                                                          | No                                                |
-| Tiny                                                         | No                                                           | Yes                                               |
+|                                                              | SD VAE*                                                      | TAESD                                                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Parameters in Encoder                                        | 34,163,592                                                   | 1,222,532                                                    |
+| Parameters in Decoder                                        | 49,490,179                                                   | 1,222,531                                                    |
+| ONNX Ops                                                     | Add, Cast, Concat, Constant, ConstantOfShape, Conv, Div, Gather, InstanceNormalization, MatMul, Mul, Pad, Reshape, Resize, Shape, Sigmoid, Slice, Softmax, Transpose, Unsqueeze | Add, Constant, Conv, Div, Mul, Relu, Resize, Tanh            |
+| Runtime / memory scales linearly with size of the latents    | No                                                           | Yes                                                          |
+| Bounded receptive field so you can split decoding work into tiles without, like, weird seams and stuff | No                                                           | ~~Yes~~ (**EDIT**: but you still need enough tile overlap to cover TAESD's bounded receptive field... so [in practice](https://github.com/madebyollin/taesd/issues/8#issuecomment-1675992525), I still wouldn't recommend tiled decoding :P) |
+| High-quality details                                         | Yes                                                          | No                                                           |
+| Tiny                                                         | No                                                           | Yes                                                          |
 
 
 ---
