@@ -11,7 +11,7 @@ TAESD is very tiny autoencoder which uses the same "latent API" as Stable Diffus
 * TAESD is already available in
     * [A1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) thanks to [Sakura-Luna](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/10365) (enable it in [Settings](https://github.com/madebyollin/taesd/issues/7#issuecomment-1669809631))
     * [vladmandic](https://github.com/vladmandic/automatic) thanks to [vladmandic](https://github.com/vladmandic/automatic/discussions/99#discussioncomment-6041142)
-    * [ComfyUI](https://github.com/comfyanonymous/ComfyUI) thanks to [space-nuko](https://github.com/comfyanonymous/ComfyUI/pull/713) ()
+    * [ComfyUI](https://github.com/comfyanonymous/ComfyUI) thanks to [space-nuko](https://github.com/comfyanonymous/ComfyUI/pull/713)
 * TAESD is also available for [🧨 Diffusers](https://huggingface.co/docs/diffusers/main/en/api/models/autoencoder_tiny) in `safetensors` format
    * [taesd](https://huggingface.co/madebyollin/taesd)
    * [taesdxl](https://huggingface.co/madebyollin/taesdxl)
@@ -23,13 +23,9 @@ TAESD is very tiny autoencoder which uses the same "latent API" as Stable Diffus
 
 Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image generation progress in real time. Here's a minimal [example notebook](examples/Previewing_During_Image_Generation.ipynb) that adds TAESD previewing to the 🧨 Diffusers implementation of SD2.1.
 
-| ![](images/preview_images_1.gif) | ![](images/preview_images_2.gif) | ![](images/preview_images_3.gif) |
-| -------------------------------- | -------------------------------- | -------------------------------- |
+![](images/preview_images_1.gif)
 
-You can also use TAESD for other tasks where the official VAE is [inconvenient](https://twitter.com/cloneofsimo/status/1624134163136933893), like quickly decoding really large images (these examples used the [latent upscaler](https://huggingface.co/docs/diffusers/main/en/api/pipelines/stable_diffusion/latent_upscale)).
-
-| ![](images/latent_upscaled_1.jpg) | ![](images/latent_upscaled_2.jpg) | ![](images/latent_upscaled_3.jpg) |
-| --------------------------------- | --------------------------------- | --------------------------------- |
+You can also use TAESD for other tasks where the official VAE is [inconvenient](https://twitter.com/cloneofsimo/status/1624134163136933893), like quickly decoding really large images.
 
 ## How does TAESD work?
 
@@ -47,14 +43,9 @@ Internally, TAESD is a bunch of Conv+Relu resblocks and 2x upsample layers:
 
 ## What are the limitations of TAESD?
 
-If you want to decode detailed, high-quality images, and don't care how long it takes, you should just use the original SD VAE* decoder. TAESD is very tiny and trying to work very quickly, so it tends to fudge fine details. Examples:
+If you want to decode detailed, high-quality images, and don't care how long it takes, you should just use the original SD VAE* decoder. TAESD is very tiny and trying to work very quickly, so it tends to fudge fine details. Example:
 
-| ![](./images/limitations_1.jpg) | ![](./images/limitations_2.jpg) | ![](./images/limitations_3.jpg) |
-| ------------------------------- | ------------------------------- | ------------------------------- |
-
-
-| ![](images/limitations_stylized_1.jpg) | ![](./images/limitations_stylized_2.jpg) | ![](./images/limitations_stylized_3.jpg) |
-| -------------------------------------- | ---------------------------------------- | ---------------------------------------- |
+![new york city skyline, professional photograph at dawn](images/limitations.jpg)
 
 TAESD trades a (modest) loss in quality for a (substantial) gain in speed and convenience.
 
