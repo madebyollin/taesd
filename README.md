@@ -6,6 +6,14 @@ TAESD is very tiny autoencoder which uses the same "latent API" as Stable Diffus
 
 ![](images/screenshot.jpg)
 
+TAESD is compatible with SD1/2-based models (using the `taesd_*` weights).
+
+![](images/screenshot_2.jpg)
+
+TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights).
+
+![](images/screenshot_3.jpg)
+
 ## Where can I get TAESD?
 
 * TAESD is already available in
@@ -18,8 +26,6 @@ TAESD is very tiny autoencoder which uses the same "latent API" as Stable Diffus
    * [taesd](https://huggingface.co/madebyollin/taesd)
    * [taesdxl](https://huggingface.co/madebyollin/taesdxl)
 * TAESD's original weights are in this repo
-   * `taesd_*.pth` are compatible with the original [Stable Diffusion VAE](https://huggingface.co/stabilityai/sd-vae-ft-mse-original)
-   * `taesdxl_*.pth` are compatible with the retrained [SDXL VAE](https://huggingface.co/stabilityai/sdxl-vae)
 
 ## What can I use TAESD for?
 
