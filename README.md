@@ -33,7 +33,7 @@ Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image ge
 
 ![](images/preview_images_1.gif)
 
-You can also use TAESD for other tasks where the official VAE is [inconvenient](https://twitter.com/cloneofsimo/status/1624134163136933893), like quickly decoding really large images.
+Since TAESD includes an encoder, you can use TAESD for any tasks where the official VAE is [inconvenient](https://twitter.com/cloneofsimo/status/1624134163136933893). Note that TAESD uses different scaling conventions than the official VAE (TAESD expects image values to be in [0, 1] instead of [-1, 1], and TAESD's "scale_factor" for latents is 1 instead of some [long](https://github.com/CompVis/stable-diffusion/blob/main/configs/stable-diffusion/v1-inference.yaml#L17) [decimal](https://github.com/Stability-AI/generative-models/blob/main/configs/inference/sd_xl_base.yaml#L4). Here's an [example notebook](examples/Encoding_and_Decoding.ipynb) showing how to use TAESD for encoding / decoding.
 
 ## How does TAESD work?
 
