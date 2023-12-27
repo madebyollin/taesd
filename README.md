@@ -51,9 +51,9 @@ Internally, TAESD is a bunch of Conv+Relu resblocks and 2x upsample layers:
 
 ## What are the limitations of TAESD?
 
-If you want to decode detailed, high-quality images, and don't care how long it takes, you should just use the original SD VAE* decoder. TAESD is very tiny and trying to work very quickly, so it tends to fudge fine details. Example:
+If you want to decode detailed, high-quality images, and don't care how long it takes, you should just use the original SD VAE* decoder (or possibly OpenAI's [Consistency Decoder](https://github.com/openai/consistencydecoder)). TAESD is very tiny and trying to work very quickly, so it tends to fudge fine details. Example:
 
-![new york city skyline, professional photograph at dawn](images/limitations.jpg)
+![](images/limitations.jpg)
 
 TAESD trades a (modest) loss in quality for a (substantial) gain in speed and convenience.
 
