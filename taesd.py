@@ -22,18 +22,18 @@ class Block(nn.Module):
     def forward(self, x):
         return self.fuse(self.conv(x) + self.skip(x))
 
-def Encoder():
+def Encoder(latent_channels=4):
     return nn.Sequential(
         conv(3, 64), Block(64, 64),
         conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
         conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
         conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
-        conv(64, 4),
+        conv(64, latent_channels),
     )
 
-def Decoder():
+def Decoder(latent_channels=4):
     return nn.Sequential(
-        Clamp(), conv(4, 64), nn.ReLU(),
+        Clamp(), conv(latent_channels, 64), nn.ReLU(),
         Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
         Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
         Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
@@ -44,11 +44,13 @@ class TAESD(nn.Module):
     latent_magnitude = 3
     latent_shift = 0.5
 
-    def __init__(self, encoder_path="taesd_encoder.pth", decoder_path="taesd_decoder.pth"):
+    def __init__(self, encoder_path="taesd_encoder.pth", decoder_path="taesd_decoder.pth", latent_channels=None):
         """Initialize pretrained TAESD on the given device from the given checkpoints."""
         super().__init__()
-        self.encoder = Encoder()
-        self.decoder = Decoder()
+        if latent_channels is None:
+            latent_channels = 16 if "taesd3" in str(encoder_path) else 4
+        self.encoder = Encoder(latent_channels)
+        self.decoder = Decoder(latent_channels)
         if encoder_path is not None:
             self.encoder.load_state_dict(torch.load(encoder_path, map_location="cpu"))
         if decoder_path is not None:

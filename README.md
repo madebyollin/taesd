@@ -10,7 +10,7 @@ TAESD is compatible with SD1/2-based models (using the `taesd_*` weights).
 
 ![](images/screenshot_2.jpg)
 
-TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights).
+TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights) and SD3-based models (using the `taesd3_*` weights).
 
 ![](images/screenshot_3.jpg)
 
@@ -25,6 +25,7 @@ TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights).
 * TAESD is also available for [🧨 Diffusers](https://huggingface.co/docs/diffusers/main/en/api/models/autoencoder_tiny) in `safetensors` format
    * [taesd](https://huggingface.co/madebyollin/taesd)
    * [taesdxl](https://huggingface.co/madebyollin/taesdxl)
+   * [taesd3](https://huggingface.co/madebyollin/taesd3)
 * TAESD's original weights are in this repo
 
 ## What can I use TAESD for?
