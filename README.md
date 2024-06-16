@@ -46,7 +46,7 @@ The original / decoded images are of shape `3xHxW` with values in approximately 
 
 ![](./images/compare_encoders.jpg)
 
-Internally, TAESD is a bunch of Conv+Relu resblocks and 2x upsample layers:
+Internally, TAESD is a bunch of Conv+ReLU resblocks and 2x upsample layers:
 
 ![](./images/taesd_decoder_onnx.jpg)
 
@@ -73,4 +73,4 @@ TAESD trades a (modest) loss in quality for a (substantial) gain in speed and co
 
 ---
 
-\* VQGAN? AutoencoderKL? `first_stage_model`? [This thing.](https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/vae.py)
+\* VQGAN? AutoencoderKL? `first_stage_model`? [This thing.](https://github.com/huggingface/diffusers/blob/v0.29.0/src/diffusers/models/autoencoders/autoencoder_kl.py#L35)
