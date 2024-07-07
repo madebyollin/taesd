@@ -23,7 +23,7 @@ TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights) 
     * [vladmandic](https://github.com/vladmandic/automatic) thanks to [vladmandic](https://github.com/vladmandic/automatic/discussions/99#discussioncomment-6041142)
     * [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
         * As a previewer, thanks to [space-nuko](https://github.com/comfyanonymous/ComfyUI/pull/713) (follow the instructions under ["How to show high-quality previews"](https://github.com/comfyanonymous/ComfyUI#how-to-show-high-quality-previews), then launch ComfyUI with `--preview-method taesd`)
-        * As a standalone VAE (see [the instructions](./comfyui_checkpoints))
+        * As a standalone VAE (download **both** `taesd_encoder.pth` and `taesd_decoder.pth` into `models/vae_approx`, then add a `Load VAE` node and set `vae_name` to `taesd`)
 * TAESD is also available for [🧨 Diffusers](https://huggingface.co/docs/diffusers/main/en/api/models/autoencoder_tiny) in `safetensors` format
    * [taesd](https://huggingface.co/madebyollin/taesd)
    * [taesdxl](https://huggingface.co/madebyollin/taesdxl)
