@@ -48,13 +48,21 @@ class TAESD(nn.Module):
         """Initialize pretrained TAESD on the given device from the given checkpoints."""
         super().__init__()
         if latent_channels is None:
-            latent_channels = 16 if "taesd3" in str(encoder_path) else 4
+            latent_channels = self.guess_latent_channels(str(encoder_path))
         self.encoder = Encoder(latent_channels)
         self.decoder = Decoder(latent_channels)
         if encoder_path is not None:
             self.encoder.load_state_dict(torch.load(encoder_path, map_location="cpu"))
         if decoder_path is not None:
             self.decoder.load_state_dict(torch.load(decoder_path, map_location="cpu"))
+
+    def guess_latent_channels(self, encoder_path):
+        """guess latent channel count based on encoder filename"""
+        if "taef1" in encoder_path:
+            return 16
+        if "taesd3" in encoder_path:
+            return 16
+        return 4
 
     @staticmethod
     def scale_latents(x):

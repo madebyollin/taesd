@@ -10,7 +10,7 @@ TAESD is compatible with SD1/2-based models (using the `taesd_*` weights).
 
 ![](images/screenshot_2.jpg)
 
-TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights) and SD3-based models (using the `taesd3_*` weights).
+TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights), SD3-based models (using the `taesd3_*` weights), and FLUX.1-based models (using the `taef1_*` weights).
 
 ![](images/screenshot_3.jpg)
 
