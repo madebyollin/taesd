@@ -76,4 +76,4 @@ TAESD trades a (modest) loss in quality for a (substantial) gain in speed and co
 
 ---
 
-\* VQGAN? AutoencoderKL? `first_stage_model`? [This thing.](https://github.com/huggingface/diffusers/blob/v0.29.0/src/diffusers/models/autoencoders/autoencoder_kl.py#L35)
+\* VQGAN? AutoencoderKL? `first_stage_model`? [This thing.](https://github.com/huggingface/diffusers/blob/v0.29.0/src/diffusers/models/autoencoders/autoencoder_kl.py#L35) See also [this gist](https://gist.github.com/madebyollin/ff6aeadf27b2edbc51d05d5f97a595d9) which has additional links and information about the VAEs.
