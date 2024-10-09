@@ -37,7 +37,9 @@ Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image ge
 
 ![](images/preview_images_1.gif)
 
-Since TAESD includes an encoder, you can use TAESD for any tasks where the official VAE is [inconvenient](https://twitter.com/cloneofsimo/status/1624134163136933893). Note that TAESD uses different scaling conventions than the official VAE (TAESD expects image values to be in [0, 1] instead of [-1, 1], and TAESD's "scale_factor" for latents is 1 instead of some [long](https://github.com/CompVis/stable-diffusion/blob/main/configs/stable-diffusion/v1-inference.yaml#L17) [decimal](https://github.com/Stability-AI/generative-models/blob/main/configs/inference/sd_xl_base.yaml#L4)). Here's an [example notebook](examples/Encoding_and_Decoding.ipynb) showing how to use TAESD for encoding / decoding.
+Since TAESD includes a tiny latent encoder, you can use TAESD as a cheap standalone VAE whenever the official VAE is [inconvenient](https://search.arxiv.org/?in=&query=taesd), like when doing real-time interactive image generation or when applying image-space loss functions to latent-space models.
+
+Note that TAESD uses different scaling conventions than the official VAE (TAESD expects image values to be in [0, 1] instead of [-1, 1], and TAESD's "scale_factor" for latents is 1 instead of some [long](https://github.com/CompVis/stable-diffusion/blob/main/configs/stable-diffusion/v1-inference.yaml#L17) [decimal](https://github.com/Stability-AI/generative-models/blob/main/configs/inference/sd_xl_base.yaml#L4)). Here's an [example notebook](examples/Encoding_and_Decoding.ipynb) showing how to use TAESD for encoding / decoding.
 
 ## How does TAESD work?
 
@@ -61,6 +63,10 @@ If you want to decode detailed, high-quality images, and don't care how long it 
 
 TAESD trades a (modest) loss in quality for a (substantial) gain in speed and convenience.
 
+## Does TAESD work with video generators?
+
+TAESD can be used with any video generator that produces sequences of SD latents, such as [StreamDiffusion](https://github.com/cumulo-autumn/StreamDiffusion) or [AnimateLCM](https://animatelcm.github.io). However, TAESD generates new details for each frame so the results will flicker a bit. For smooth realtime video decoding you want [TAESDV](https://github.com/madebyollin/taesdv), and for slow-but-high-quality video decoding you want the [SVD VAE](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/blob/main/vae/config.json).
+
 ## Comparison table
 
 |                                                              | SD VAE*                                                      | TAESD                                                        |
@@ -72,7 +78,6 @@ TAESD trades a (modest) loss in quality for a (substantial) gain in speed and co
 | Bounded receptive field so you can split decoding work into tiles without, like, weird seams and stuff | No                                                           | ~~Yes~~ (**EDIT**: but you still need enough tile overlap to cover TAESD's bounded receptive field... so [in practice](https://github.com/madebyollin/taesd/issues/8#issuecomment-1675992525), I still wouldn't recommend tiled decoding :P) |
 | High-quality details                                         | Yes                                                          | No                                                           |
 | Tiny                                                         | No                                                           | Yes                                                          |
-
 
 ---
 
