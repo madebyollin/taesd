@@ -52,9 +52,9 @@ class TAESD(nn.Module):
         self.encoder = Encoder(latent_channels)
         self.decoder = Decoder(latent_channels)
         if encoder_path is not None:
-            self.encoder.load_state_dict(torch.load(encoder_path, map_location="cpu"))
+            self.encoder.load_state_dict(torch.load(encoder_path, map_location="cpu", weights_only=True))
         if decoder_path is not None:
-            self.decoder.load_state_dict(torch.load(decoder_path, map_location="cpu"))
+            self.decoder.load_state_dict(torch.load(decoder_path, map_location="cpu", weights_only=True))
 
     def guess_latent_channels(self, encoder_path):
         """guess latent channel count based on encoder filename"""
