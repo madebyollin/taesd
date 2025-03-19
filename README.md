@@ -65,7 +65,13 @@ TAESD trades a (modest) loss in quality for a (substantial) gain in speed and co
 
 ## Does TAESD work with video generators?
 
-TAESD can be used with any video generator that produces sequences of SD latents, such as [StreamDiffusion](https://github.com/cumulo-autumn/StreamDiffusion) or [AnimateLCM](https://animatelcm.github.io). However, TAESD generates new details for each frame so the results will flicker a bit. For smooth realtime video decoding you want [TAESDV](https://github.com/madebyollin/taesdv), and for slow-but-high-quality video decoding you want the [SVD VAE](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/blob/main/vae/config.json).
+TAESD can be used with any video generator that produces sequences of SD latents, such as [StreamDiffusion](https://github.com/cumulo-autumn/StreamDiffusion) or [AnimateLCM](https://animatelcm.github.io). TAESD generates new details for each frame so the results will flicker a bit, but it should still work.
+
+I've also trained dedicated Tiny AutoEncoders for some common video generators:
+- [TAESDV](https://github.com/madebyollin/taesdv), for SD1/SD2/SVD
+- [TAEM1](https://github.com/madebyollin/taem1), for Mochi 1
+- [TAEHV](https://github.com/madebyollin/taehv), for Hunyuan Video
+- [TAEW2.1](https://github.com/madebyollin/taehv#how-do-i-use-taehv-with-wan-21), for Wan 2.1
 
 ## Comparison table
 
