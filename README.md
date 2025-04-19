@@ -37,7 +37,7 @@ Since TAESD is very fast, you can use TAESD to watch Stable Diffusion's image ge
 
 ![](images/preview_images_1.gif)
 
-Since TAESD includes a tiny latent encoder, you can use TAESD as a cheap standalone VAE whenever the official VAE is [inconvenient](https://search.arxiv.org/?in=&query=taesd), like when doing real-time interactive image generation or when applying image-space loss functions to latent-space models.
+Since TAESD includes a tiny latent encoder, you can use TAESD as a cheap standalone VAE whenever the official VAE is [inconvenient](https://search.arxiv.org/?in=&query=taesd), like when doing real-time interactive image generation or when applying image-space loss functions to latent-space models. You can even run TAESD on a dedicated [tiny NPU](https://ieeexplore.ieee.org/document/10904763) for maximum efficiency.
 
 Note that TAESD uses different scaling conventions than the official VAE (TAESD expects image values to be in [0, 1] instead of [-1, 1], and TAESD's "scale_factor" for latents is 1 instead of some [long](https://github.com/CompVis/stable-diffusion/blob/main/configs/stable-diffusion/v1-inference.yaml#L17) [decimal](https://github.com/Stability-AI/generative-models/blob/main/configs/inference/sd_xl_base.yaml#L4)). Here's an [example notebook](examples/Encoding_and_Decoding.ipynb) showing how to use TAESD for encoding / decoding.
 
