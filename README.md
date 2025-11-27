@@ -10,10 +10,16 @@ TAESD is compatible with SD1/2-based models (using the `taesd_*` weights).
 
 ![](images/screenshot_2.jpg)
 
-TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights), SD3-based models (using the `taesd3_*` weights), and FLUX.1-based models (using the `taef1_*` weights).
-For Qwen Image (which uses the Wan 2.1 VAE), check [TAEW2.1](https://github.com/madebyollin/taehv#what-video-models-does-taehv-support).
+TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights) and SD3-based models (using the `taesd3_*` weights).
+[Several non-SD models](#how-do-i-use-taesd-with-non-sd-models) have support too.
 
 ![](images/screenshot_3.jpg)
+
+## How do I use TAESD with non-SD models?
+
+* For **FLUX.1**, use the `taef1_*` weights.
+    * For **HiDream** and **Z-Image** (which use the same VAE as FLUX.1), you also want the `taef1_*` weights.
+* For **Qwen Image** (which uses the Wan 2.1 VAE), check [TAEW2.1](https://github.com/madebyollin/taehv#what-video-models-does-taehv-support).
 
 ## Where can I get TAESD?
 
