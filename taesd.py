@@ -40,29 +40,58 @@ def Decoder(latent_channels=4):
         Block(64, 64), conv(64, 3),
     )
 
+def F32Encoder(latent_channels=32):
+    """Encoder variant with 32x spatial downscaling instead of 8x."""
+    return nn.Sequential(
+        conv(3, 32, stride=2), nn.ReLU(inplace=True), conv(32, 64, stride=2), nn.ReLU(inplace=True), Block(64, 64),
+        conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
+        conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
+        conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
+        conv(64, latent_channels),
+    )
+
+def F32Decoder(latent_channels=32):
+    """Decoder variant with 32x spatial upscaling instead of 8x."""
+    return nn.Sequential(
+        Clamp(), conv(latent_channels, 256), nn.ReLU(),
+        Block(256, 256), Block(256, 256), Block(256, 256), nn.Upsample(scale_factor=2), conv(256, 128, bias=False),
+        Block(128, 128), Block(128, 128), Block(128, 128), nn.Upsample(scale_factor=2), conv(128, 64, bias=False),
+        Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
+        Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
+        Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
+        Block(64, 64), conv(64, 3),
+    )
+
 class TAESD(nn.Module):
     latent_magnitude = 3
     latent_shift = 0.5
 
-    def __init__(self, encoder_path="taesd_encoder.pth", decoder_path="taesd_decoder.pth", latent_channels=None):
+    def __init__(self, encoder_path="taesd_encoder.pth", decoder_path="taesd_decoder.pth", latent_channels=None, arch_variant=None):
         """Initialize pretrained TAESD on the given device from the given checkpoints."""
         super().__init__()
         if latent_channels is None:
-            latent_channels = self.guess_latent_channels(str(encoder_path))
-        self.encoder = Encoder(latent_channels)
-        self.decoder = Decoder(latent_channels)
+            latent_channels, arch_variant = self.guess_latent_channels_and_arch(str(encoder_path))
+        self.encoder, self.decoder = Encoder(latent_channels), Decoder(latent_channels)
+        if arch_variant == "f32":
+            self.encoder, self.decoder = F32Encoder(latent_channels), F32Decoder(latent_channels)
         if encoder_path is not None:
             self.encoder.load_state_dict(torch.load(encoder_path, map_location="cpu", weights_only=True))
         if decoder_path is not None:
             self.decoder.load_state_dict(torch.load(decoder_path, map_location="cpu", weights_only=True))
 
     def guess_latent_channels(self, encoder_path):
-        """guess latent channel count based on encoder filename"""
+        """Guess latent channel count based on encoder filename"""
+        return self.guess_latent_channels_and_arch(encoder_path)[0]
+
+    def guess_latent_channels_and_arch(self, encoder_path):
+        """Guess latent channel count and architecture variant based on encoder filename"""
         if "taef1" in encoder_path:
-            return 16
+            return 16, None
         if "taesd3" in encoder_path:
-            return 16
-        return 4
+            return 16, None
+        if "taesana" in encoder_path:
+            return 32, "f32" # f32c32
+        return 4, None
 
     @staticmethod
     def scale_latents(x):
