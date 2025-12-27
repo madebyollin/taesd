@@ -19,6 +19,7 @@ TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights) 
 
 * For **FLUX.1**, use the `taef1_*` weights.
     * For **HiDream** and **Z-Image** (which use the same VAE as FLUX.1), you also want the `taef1_*` weights.
+* For **FLUX.2**, use the `taef2_*` weights.
 * For **Qwen Image** (which uses the Wan 2.1 VAE), check [TAEW2.1](https://github.com/madebyollin/taehv#what-video-models-does-taehv-support).
 * For **Sana** ([`dc-ae-f32c32-sana-1.0`](https://huggingface.co/mit-han-lab/dc-ae-f32c32-sana-1.0-diffusers)), use the `taesana_*` weights.
 

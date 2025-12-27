@@ -14,27 +14,35 @@ class Clamp(nn.Module):
         return torch.tanh(x / 3) * 3
 
 class Block(nn.Module):
-    def __init__(self, n_in, n_out):
+    def __init__(self, n_in, n_out, use_midblock_gn=False):
         super().__init__()
         self.conv = nn.Sequential(conv(n_in, n_out), nn.ReLU(), conv(n_out, n_out), nn.ReLU(), conv(n_out, n_out))
         self.skip = nn.Conv2d(n_in, n_out, 1, bias=False) if n_in != n_out else nn.Identity()
         self.fuse = nn.ReLU()
+        self.pool = None
+        if use_midblock_gn:
+            conv1x1, n_gn = lambda n_in, n_out: nn.Conv2d(n_in, n_out, 1, bias=False), n_in*4
+            self.pool = nn.Sequential(conv1x1(n_in, n_gn), nn.GroupNorm(4, n_gn), nn.ReLU(inplace=True), conv1x1(n_gn, n_in))
     def forward(self, x):
+        if self.pool is not None:
+            x = x + self.pool(x)
         return self.fuse(self.conv(x) + self.skip(x))
 
-def Encoder(latent_channels=4):
+def Encoder(latent_channels=4, use_midblock_gn=False):
+    mb_kw = dict(use_midblock_gn=use_midblock_gn)
     return nn.Sequential(
         conv(3, 64), Block(64, 64),
         conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
         conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
-        conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
+        conv(64, 64, stride=2, bias=False), Block(64, 64, **mb_kw), Block(64, 64, **mb_kw), Block(64, 64, **mb_kw),
         conv(64, latent_channels),
     )
 
-def Decoder(latent_channels=4):
+def Decoder(latent_channels=4, use_midblock_gn=False):
+    mb_kw = dict(use_midblock_gn=use_midblock_gn)
     return nn.Sequential(
         Clamp(), conv(latent_channels, 64), nn.ReLU(),
-        Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
+        Block(64, 64, **mb_kw), Block(64, 64, **mb_kw), Block(64, 64, **mb_kw), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
         Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
         Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
         Block(64, 64), conv(64, 3),
@@ -71,7 +79,10 @@ class TAESD(nn.Module):
         super().__init__()
         if latent_channels is None:
             latent_channels, arch_variant = self.guess_latent_channels_and_arch(str(encoder_path))
-        self.encoder, self.decoder = Encoder(latent_channels), Decoder(latent_channels)
+        # flux_2 required global pooling/norm for accurate distillation, enable conditionally
+        self.encoder = Encoder(latent_channels, use_midblock_gn=(arch_variant in ["flux_2"]))
+        self.decoder = Decoder(latent_channels, use_midblock_gn=(arch_variant in ["flux_2"]))
+        # sana dcae requires 32x spatial downscaling, enable conditionally
         if arch_variant == "f32":
             self.encoder, self.decoder = F32Encoder(latent_channels), F32Decoder(latent_channels)
         if encoder_path is not None:
@@ -87,6 +98,8 @@ class TAESD(nn.Module):
         """Guess latent channel count and architecture variant based on encoder filename"""
         if "taef1" in encoder_path:
             return 16, None
+        if "taef2" in encoder_path:
+            return 32, "flux_2"
         if "taesd3" in encoder_path:
             return 16, None
         if "taesana" in encoder_path:
