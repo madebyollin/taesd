@@ -40,6 +40,7 @@ TAESD is also compatible with SDXL-based models (using the `taesdxl_*` weights) 
    * [taesd3](https://huggingface.co/madebyollin/taesd3)
    * [taef1](https://huggingface.co/madebyollin/taef1)
    * [taef2](https://huggingface.co/madebyollin/taef2)
+   * [taeqi2_1](https://huggingface.co/madebyollin/taeqi2_1)
 * TAESD's original weights are in this repo
 
 ## What can I use TAESD for?
