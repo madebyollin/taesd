@@ -28,6 +28,19 @@ class Block(nn.Module):
             x = x + self.pool(x)
         return self.fuse(self.conv(x) + self.skip(x))
 
+class SuperBlock(nn.Module):
+    """Cheaper ConvNeXt-style Block (7x7 depthwise conv + inverted bottleneck), as in TAEHV's SuperMemBlock."""
+    def __init__(self, n_in, n_out, expansion=2):
+        super().__init__()
+        assert n_in == n_out
+        self.conv = nn.Sequential(
+            nn.Conv2d(n_in, n_in, 7, padding=3, groups=n_in, bias=False),
+            nn.Conv2d(n_in, n_in * expansion, 1), nn.ReLU(inplace=True),
+            nn.Conv2d(n_in * expansion, n_in, 1, bias=False),
+        )
+    def forward(self, x):
+        return self.conv(x) + x
+
 def Encoder(latent_channels=4, use_midblock_gn=False, image_channels=3):
     mb_kw = dict(use_midblock_gn=use_midblock_gn)
     return nn.Sequential(
@@ -70,22 +83,22 @@ def F32Decoder(latent_channels=32, image_channels=3):
         Block(64, 64), conv(64, image_channels),
     )
 
-def F16Encoder(latent_channels=64, image_channels=3):
+def F16Encoder(latent_channels=64, image_channels=3, lowres_block=Block):
     """Encoder variant with 16x spatial downscaling, 2x2 input patchify, and wider low-res stages."""
     return nn.Sequential(
         nn.PixelUnshuffle(2), conv(image_channels * 4, 64), nn.ReLU(inplace=True), Block(64, 64),
         conv(64, 64, stride=2, bias=False), Block(64, 64), Block(64, 64), Block(64, 64),
-        conv(64, 128, stride=2, bias=False), Block(128, 128), Block(128, 128), Block(128, 128),
-        conv(128, 256, stride=2, bias=False), Block(256, 256), Block(256, 256), Block(256, 256),
+        conv(64, 128, stride=2, bias=False), lowres_block(128, 128), lowres_block(128, 128), lowres_block(128, 128),
+        conv(128, 256, stride=2, bias=False), lowres_block(256, 256), lowres_block(256, 256), lowres_block(256, 256),
         conv(256, latent_channels),
     )
 
-def F16Decoder(latent_channels=64, image_channels=3):
+def F16Decoder(latent_channels=64, image_channels=3, lowres_block=Block):
     """Decoder variant with 16x spatial upscaling, wider low-res stages, and 2x2 output patchify."""
     return nn.Sequential(
         Clamp(), conv(latent_channels, 256), nn.ReLU(),
-        Block(256, 256), Block(256, 256), Block(256, 256), nn.Upsample(scale_factor=2), conv(256, 128, bias=False),
-        Block(128, 128), Block(128, 128), Block(128, 128), nn.Upsample(scale_factor=2), conv(128, 64, bias=False),
+        lowres_block(256, 256), lowres_block(256, 256), lowres_block(256, 256), nn.Upsample(scale_factor=2), conv(256, 128, bias=False),
+        lowres_block(128, 128), lowres_block(128, 128), lowres_block(128, 128), nn.Upsample(scale_factor=2), conv(128, 64, bias=False),
         Block(64, 64), Block(64, 64), Block(64, 64), nn.Upsample(scale_factor=2), conv(64, 64, bias=False),
         Block(64, 64), conv(64, image_channels * 4), nn.PixelShuffle(2),
     )
@@ -98,21 +111,25 @@ class TAESD(nn.Module):
         """Initialize pretrained TAESD on the given device from the given checkpoints."""
         super().__init__()
         if latent_channels is None:
-            latent_channels, arch_variant = self.guess_latent_channels_and_arch(str(encoder_path))
+            latent_channels, arch_variant = self.guess_latent_channels_and_arch(str(encoder_path or decoder_path))
         if image_channels is None:
             image_channels = self.guess_image_channels(str(encoder_path or decoder_path))
         # 3 for RGB, 4 for RGBA (straight alpha)
         self.image_channels = image_channels
         self.latent_channels = latent_channels
-        # flux_2 required global pooling/norm for accurate distillation, enable conditionally
-        self.encoder = Encoder(latent_channels, use_midblock_gn=(arch_variant in ["flux_2"]), image_channels=image_channels)
-        self.decoder = Decoder(latent_channels, use_midblock_gn=(arch_variant in ["flux_2"]), image_channels=image_channels)
         # sana dcae requires 32x spatial downscaling, enable conditionally
         if arch_variant == "f32":
             self.encoder, self.decoder = F32Encoder(latent_channels, image_channels), F32Decoder(latent_channels, image_channels)
         # qwen image 2.1 vae requires 16x spatial downscaling, enable conditionally
-        if arch_variant == "f16":
+        elif arch_variant == "f16":
             self.encoder, self.decoder = F16Encoder(latent_channels, image_channels), F16Decoder(latent_channels, image_channels)
+        # tinier f16 variant with convnext-style low-res blocks, for reduced parameter count
+        elif arch_variant == "f16_tinier":
+            self.encoder, self.decoder = F16Encoder(latent_channels, image_channels, lowres_block=SuperBlock), F16Decoder(latent_channels, image_channels, lowres_block=SuperBlock)
+        # flux_2 required global pooling/norm for accurate distillation, enable conditionally
+        else:
+            self.encoder = Encoder(latent_channels, use_midblock_gn=(arch_variant in ["flux_2"]), image_channels=image_channels)
+            self.decoder = Decoder(latent_channels, use_midblock_gn=(arch_variant in ["flux_2"]), image_channels=image_channels)
         if encoder_path is not None:
             self.encoder.load_state_dict(torch.load(encoder_path, map_location="cpu", weights_only=True))
         if decoder_path is not None:
@@ -132,6 +149,8 @@ class TAESD(nn.Module):
             return 16, None
         if "taesana" in encoder_path:
             return 32, "f32" # f32c32
+        if "taeqi2_1_tinier" in encoder_path:
+            return 64, "f16_tinier" # f16c64, cheaper low-res blocks
         if "taeqi2_1" in encoder_path:
             return 64, "f16" # f16c64
         return 4, None
